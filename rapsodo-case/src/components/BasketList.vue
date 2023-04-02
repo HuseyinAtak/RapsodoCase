@@ -29,25 +29,25 @@
         <v-row >
         <v-col cols="8">
         <!-- Basket Item -->
-          <div>
+          <div v-for="item in $store.state.cartItems" :key="item.name">
             <v-row>
             <v-col align="center" cols="3">
-          <v-img width="240" src="https://picsum.photos/250/250?random=1" ></v-img>
+                <v-img width="240" :src="`https://picsum.photos/250/250?random=${item.amount}`" ></v-img>
             </v-col>
             <v-col  cols="6">
                 <v-card-text>
-            <h2>sss</h2>
-          <div>Ebat: </div>
-          <div>Renk: </div>
-          <div>Fiyat:  $</div>
+            <h2>{{item.name}}</h2>
+          <div>Size: {{item.size}}</div>
+          <div>Color: {{item.color}} </div>
+          <div>Fiyat: $ {{item.amount}}</div>
           <div>
           </div>
         </v-card-text>
             </v-col>
             <v-col align="center" cols="3">
-            <v-btn>-</v-btn>
-            <p >adet</p>
-            <v-btn>+</v-btn>
+            <v-btn @click="removeQuantity(item)" >-</v-btn>
+            <p >{{ item.quantity }}</p>
+            <v-btn @click="addQuantity(item)">+</v-btn>
           </v-col>
           </v-row>
           <br> <hr>
@@ -56,7 +56,7 @@
         <v-col cols="1">
         </v-col>
         <v-col align="center" cols="3">
-            $290
+            {{this.$store.state.totalPrice}}
         </v-col>
         </v-row>
     </v-container>
@@ -65,7 +65,14 @@
     <script>
       export default {
         name: 'BasketComponent',
-        
+        methods:{
+            addQuantity(item) {
+      this.$store.commit('addClickedItem', {name: item.name, amount:item.amount,size:item.size,stock:item.stock,color:item.color,quantity:1});
+    },
+    removeQuantity(item){
+        this.$store.commit('removeClickedQuantity', {name: item.name, amount:item.amount,size:item.size,stock:item.stock,color:item.color});
+    }
+        }
       }
     </script>
     

@@ -1,6 +1,4 @@
 <template>
-
-
 <v-container>
   <div class="basketIcon">
     <router-link to="/basket">
@@ -18,22 +16,24 @@
   </div>
    
     <v-row >
-    <v-col cols="4" v-for="(item,index) in items" :key="item.name">
+    <v-col cols="4" v-for="item in items" :key="item.name">
       <v-card  width="250" height="430">
-      <v-img width="240" :src="`https://picsum.photos/250/250?random=${index}`" ></v-img>
+      <v-img width="240" :src="`https://picsum.photos/250/250?random=${item.amount}`" ></v-img>
     <v-card-title>{{ item.name }}</v-card-title>
     <v-card-text>
       <div>Size: {{ item.size }} </div>
-      <div>Renk: {{ item.color }}</div>
-      <div>Fiyat: ${{ item.price }} </div>
+      <div>Color: {{ item.color }}</div>
+      <div>Price: ${{ item.amount }}.00 </div>
       <div>
         <v-col >
-        <v-btn class="addBtn">Add to Cart</v-btn>
+        <v-btn @click="addItem(item)" class="addBtn">Add to Cart</v-btn>
       </v-col>
       </div>
     </v-card-text>
   </v-card>
     </v-col>
+  </v-row>
+  <v-row>
   </v-row>
 </v-container>
 </template>
@@ -48,6 +48,11 @@
   },
   mounted() {
     this.$store.dispatch('fetchItems')
+  },
+  methods:{
+    addItem(item) {
+      this.$store.commit('addClickedItem', {name: item.name, amount:item.amount,size:item.size,stock:item.stock,color:item.color,quantity:1});
+    }
   }
   }
 </script>
