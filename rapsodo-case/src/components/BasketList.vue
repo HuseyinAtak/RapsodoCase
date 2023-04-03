@@ -5,7 +5,8 @@
             <v-col  align='center' cols="8">
                 <v-row class="headerRow">
                     <v-col align="start" cols="9">
-                        <div>selam</div>
+                        <div v-if="$store.state.cartItems.length!==0">Sepette ki urun sayisi: {{$store.state.cartItems.length}}</div>
+                        <div v-if="$store.state.cartItems.length==0">Sepette urun bulunmamaktadir.</div>
                     </v-col>
                     <v-col cols="3">
                         <div>
@@ -56,7 +57,9 @@
         <v-col cols="1">
         </v-col>
         <v-col align="center" cols="3">
-            {{this.$store.state.totalPrice}}
+            <div v-if="this.$store.state.totalPrice!==0">
+                {{this.$store.state.totalPrice}}
+            </div>
         </v-col>
         </v-row>
     </v-container>

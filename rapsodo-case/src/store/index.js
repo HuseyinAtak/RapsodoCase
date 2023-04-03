@@ -6,63 +6,51 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     items: [],
-    cartItems:[],
-    totalPrice:0
+    cartItems: [],
+    totalPrice: 0
   },
   mutations: {
     setItems(state, items) {
       state.items = items
     },
-    addClickedItem(state, item){
-      const existingItem = state.cartItems.some((x) => x.name === item.name);
+    addClickedItem(state, item) {
+      const existingItem = state.cartItems.find((x) => x.name === item.name);
+      const itemsStockControl = state.items.find((x) => x.name === item.name);
       if (existingItem) {
-        const cartItem = state.cartItems.find((x) => x.name === item.name);
-        if(cartItem.stock > cartItem.quantity){
-          ++cartItem.quantity
-          state.totalPrice=state.totalPrice+cartItem.amount
-        console.log(state.cartItems.find((x) => x.name === item.name).quantity)
+        if (existingItem.stock > existingItem.quantity) {
+          existingItem.quantity++;
+          itemsStockControl.stock--;
+          state.totalPrice += existingItem.amount;
+        } else {
+          alert('Stok kalmadi');
         }
-        else {
-          console.log('stok kalmadi')
-        }
-        
       } else {
-        if(item.stock>0){
-          state.cartItems.push(item);
-          state.totalPrice=state.totalPrice+item.amount
-          console.log('farkli')
-        }else{
-          console.log(item.stock)
-          console.log('stock yok')
+        if (item.stock > 0) {
+          const cartItem = { ...item, quantity: 1 };
+          itemsStockControl.stock--;
+          state.cartItems.push(cartItem);
+          state.totalPrice += cartItem.amount;
+        } else {
+          alert('Stok yok.');
         }
       }
     },
-    removeClickedQuantity(state, item){
-      const existingItem = state.cartItems.some((x) => x.name === item.name);
-      if (existingItem) {
-        const cartItem = state.cartItems.find((x) => x.name === item.name);
-        if(cartItem.quantity>1){
-          --cartItem.quantity
-          state.totalPrice=state.totalPrice-cartItem.amount
-        console.log(state.cartItems.find((x) => x.name === item.name).quantity)
-        }else {
-          const index = state.cartItems.findIndex(x=> x.name === item.name);
-          if (index !== -1) {
-            state.cartItems.splice(index, 1);
-            state.totalPrice=state.totalPrice-cartItem.amount
-          }else{
-            console.log('sikintiyo k')
-          }
+    removeClickedQuantity(state, item) {
+      const existingItemIndex = state.cartItems.findIndex((x) => x.name === item.name);
+      const itemsStockControl = state.items.find((x) => x.name === item.name);
+      if (existingItemIndex !== -1) {
+        const existingItem = state.cartItems[existingItemIndex];
+        if (existingItem.quantity > 1) {
+          existingItem.quantity--;
+          itemsStockControl.stock++;
+          state.totalPrice -= existingItem.amount;
+        } else {
+          itemsStockControl.stock++;
+          state.cartItems.splice(existingItemIndex, 1);
+          state.totalPrice -= existingItem.amount;
         }
-        
       } else {
-        if(item.quantity>1){
-          state.cartItems.push(item);
-          state.totalPrice=state.totalPrice-item.amount
-          console.log('farkli')
-        }else{
-          console.log('URUN SEPETTE YOK')
-        }
+        alert('URUN SEPETTE YOK');
       }
     }
   },
@@ -82,3 +70,4 @@ export default new Vuex.Store({
   modules: {
   }
 })
+

@@ -9,8 +9,8 @@
 </svg>
   </router-link> 
   <div>
-    <p class="basketQuantity">
-      3
+    <p class="basketQuantity"  v-if="($store.state.cartItems).length!==0">
+        {{$store.state.cartItems.length}}
     </p>
   </div>
   </div>
@@ -19,7 +19,7 @@
     <v-col cols="4" v-for="item in items" :key="item.name">
       <v-card  width="250" height="430">
       <v-img width="240" :src="`https://picsum.photos/250/250?random=${item.amount}`" ></v-img>
-    <v-card-title>{{ item.name }}</v-card-title>
+    <v-card-title>{{ item.name }} ({{ item.stock }})</v-card-title>
     <v-card-text>
       <div>Size: {{ item.size }} </div>
       <div>Color: {{ item.color }}</div>
@@ -28,6 +28,14 @@
         <v-col >
         <v-btn @click="addItem(item)" class="addBtn">Add to Cart</v-btn>
       </v-col>
+      
+      <v-row >
+        <v-col></v-col>
+        <v-col>
+          <v-btn @click="removeQuantity(item)" >-</v-btn>
+        </v-col>
+        <v-col></v-col>
+      </v-row>
       </div>
     </v-card-text>
   </v-card>
@@ -52,6 +60,9 @@
   methods:{
     addItem(item) {
       this.$store.commit('addClickedItem', {name: item.name, amount:item.amount,size:item.size,stock:item.stock,color:item.color,quantity:1});
+    },
+    removeQuantity(item){
+        this.$store.commit('removeClickedQuantity', {name: item.name, amount:item.amount,size:item.size,stock:item.stock,color:item.color});
     }
   }
   }
